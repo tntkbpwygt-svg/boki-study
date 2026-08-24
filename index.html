@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f7f4" />
+  <title>ゼロから簿記3級｜2級への最短コース</title>
+  <style>
+    :root{
+      --bg:#f7f7f4;
+      --panel:#ffffff;
+      --text:#20231f;
+      --muted:#6c7268;
+      --border:#dfe2da;
+      --accent:#314838;
+      --accent-soft:#e7eee8;
+      --good:#2f6c42;
+      --bad:#9a443f;
+      --shadow:0 8px 24px rgba(0,0,0,.05);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+      line-height:1.75;
+    }
+    button{font:inherit}
+    .app{max-width:1100px;margin:auto;padding:18px}
+    .hero{padding:28px 8px 20px}
+    .eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--muted)}
+    h1{font-size:clamp(30px,7vw,56px);line-height:1.08;margin:.3em 0}
+    .hero p{max-width:760px;font-size:17px;color:var(--muted)}
+    .progress-wrap{margin-top:18px;background:#e5e7e1;border-radius:999px;height:9px;overflow:hidden}
+    .progress{height:100%;width:0;background:var(--accent);transition:.25s}
+    .layout{display:grid;grid-template-columns:220px 1fr;gap:24px}
+    .side{position:sticky;top:12px;align-self:start}
+    .side button{
+      width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:12px;
+      min-height:44px;color:var(--text);cursor:pointer
+    }
+    .side button.active{background:var(--accent-soft);font-weight:800}
+    .lesson{display:none}
+    .lesson.active{display:block}
+    .lesson h2{font-size:clamp(25px,5vw,38px);line-height:1.2;margin-top:0}
+    .lead{font-size:17px;color:var(--muted)}
+    .card{
+      background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+      padding:clamp(18px,4vw,28px);margin:18px 0;box-shadow:var(--shadow)
+    }
+    .big{font-size:clamp(21px,4vw,30px);font-weight:850;line-height:1.4}
+    .diagram{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:24px 0}
+    .box{
+      border:2px solid var(--border);background:#fbfbf8;border-radius:16px;padding:20px;text-align:center
+    }
+    .box strong{display:block;font-size:20px}
+    .arrow{font-size:28px;color:var(--muted);text-align:center}
+    .five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:20px 0}
+    .five div{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 8px;text-align:center}
+    .five strong{display:block}
+    .five small{color:var(--muted)}
+    .memory{border-left:5px solid var(--accent);background:var(--accent-soft);padding:14px 16px;border-radius:0 12px 12px 0}
+    .taccount{display:grid;grid-template-columns:1fr 1fr;border-top:3px solid currentColor;max-width:600px;margin:20px auto}
+    .taccount>div{min-height:150px;padding:14px}
+    .taccount>div:first-child{border-right:3px solid currentColor}
+    .side-title{text-align:center;font-weight:850;font-size:18px}
+    .pill{display:inline-block;padding:4px 10px;margin:3px;border-radius:999px;background:#eef0eb;font-size:13px}
+    .journal{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:700px;margin:18px auto}
+    .journal div{padding:14px}
+    .journal div:nth-child(odd){border-right:1px solid var(--border)}
+    .journal .head{background:#eef0eb;font-weight:800;text-align:center}
+    .quiz-options{display:grid;gap:10px;margin:16px 0}
+    .quiz-options button,.action{
+      min-height:46px;padding:12px 14px;border:1px solid #cfd3ca;border-radius:12px;background:#fff;color:var(--text);cursor:pointer
+    }
+    .quiz-options button{text-align:left}
+    .quiz-options button.correct{outline:2px solid var(--good);background:#eef7f0}
+    .quiz-options button.wrong{outline:2px solid var(--bad);background:#faefee}
+    .feedback{min-height:28px;font-weight:750}
+    .next-row{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin:24px 0}
+    .action{font-weight:800}
+    .action.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+    .stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center}
+    .stat strong{font-size:24px;display:block}
+    .mini{font-size:14px;color:var(--muted)}
+    .hidden{display:none!important}
+    .result{text-align:center}
+    .result strong{font-size:42px;display:block}
+    .footer{padding:30px 8px 60px;color:var(--muted);font-size:13px;text-align:center}
+    @media(max-width:760px){
+      .layout{grid-template-columns:1fr}
+      .side{position:static;display:flex;overflow-x:auto;gap:6px;padding-bottom:6px}
+      .side button{min-width:max-content;width:auto}
+      .five{grid-template-columns:repeat(2,1fr)}
+      .five div:last-child{grid-column:1/-1}
+      .diagram{grid-template-columns:1fr}
+      .arrow{transform:rotate(90deg)}
+      .stats{grid-template-columns:1fr}
+    }
+    @media(prefers-color-scheme: dark){
+      :root{
+        --bg:#111310;--panel:#1b1e19;--text:#f0f2ec;--muted:#a5ab9f;--border:#353a32;
+        --accent:#aac4ad;--accent-soft:#263127;--shadow:none
+      }
+      .box{background:#20241e}
+      .pill,.journal .head{background:#2a2f28}
+      .quiz-options button,.action{background:#20241e;color:var(--text);border-color:#454b41}
+      .quiz-options button.correct{background:#1f3526}
+      .quiz-options button.wrong{background:#382523}
+      .progress-wrap{background:#2c3029}
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="hero">
+    <div class="eyebrow">BOOKKEEPING · ZERO START</div>
+    <h1>ゼロから簿記3級<br>2級への最短コース</h1>
+    <p>「借方・貸方って何？」の段階から、図解 → 例 → 問題の順で理解します。まずは簿記の土台を作り、最短で2級学習につなげるための教材です。</p>
+    <div class="progress-wrap"><div id="progress" class="progress"></div></div>
+    <div class="stats">
+      <div class="stat"><strong id="chapterStat">1 / 5</strong><span>現在の章</span></div>
+      <div class="stat"><strong id="scoreStat">0</strong><span>正解数</span></div>
+      <div class="stat"><strong id="doneStat">0%</strong><span>進捗</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="side" aria-label="章メニュー">
+      <button class="active" data-page="0">01 簿記とは？</button>
+      <button data-page="1">02 5つの箱</button>
+      <button data-page="2">03 左と右</button>
+      <button data-page="3">04 はじめての仕訳</button>
+      <button data-page="4">05 ミニテスト</button>
+    </nav>
+
+    <main>
+      <section class="lesson active" data-page="0">
+        <h2>01｜簿記とは？</h2>
+        <p class="lead">最初は「借方」「貸方」を覚えなくて大丈夫。まず、簿記が何のための仕組みなのかを理解します。</p>
+
+        <div class="card">
+          <div class="big">簿記 ＝ 会社で起きた出来事を、決められたルールで記録する方法。</div>
+          <p>たとえば、今日から小さなお店を始め、自分のお金100万円を店に入れたとします。</p>
+          <div class="diagram">
+            <div class="box"><strong>あなた</strong>100万円を出す</div>
+            <div class="arrow">→</div>
+            <div class="box"><strong>お店</strong>現金100万円を持つ</div>
+          </div>
+          <p>このとき、お店には「現金100万円がある」という事実と、「その100万円はオーナーが出した元手」という事実が同時に発生します。</p>
+        </div>
+
+        <div class="card">
+          <h3>なぜ2つ記録するの？</h3>
+          <p>「お金が増えた」だけでは、なぜ増えたのか分かりません。簿記では、1つの取引を必ず2つの側面から記録します。</p>
+          <div class="diagram">
+            <div class="box"><small>何が増えた？</small><strong>現金 +100万円</strong></div>
+            <div class="arrow">⇄</div>
+            <div class="box"><small>なぜ増えた？</small><strong>元手 +100万円</strong></div>
+          </div>
+          <div class="memory"><strong>最初の理解ポイント</strong><br>簿記は「お金の出入り帳」ではなく、<strong>会社の状態がどう変わったかを二方向から記録する仕組み</strong>です。</div>
+        </div>
+
+        <div class="next-row"><button class="action primary next">次へ：5つの箱 →</button></div>
+      </section>
+
+      <section class="lesson" data-page="1">
+        <h2>02｜すべてを「5つの箱」に入れる</h2>
+        <p class="lead">会社で起こることは、最終的に5種類に分類できます。</p>
+
+        <div class="five">
+          <div><strong>資産</strong><small>持っているもの</small></div>
+          <div><strong>負債</strong><small>返す義務</small></div>
+          <div><strong>純資産</strong><small>正味財産</small></div>
+          <div><strong>収益</strong><small>利益を増やす原因</small></div>
+          <div><strong>費用</strong><small>利益を減らす原因</small></div>
+        </div>
+
+        <div class="card"><h3>① 資産</h3><p>会社が持つ<strong>財産や権利</strong>です。</p><span class="pill">現金</span><span class="pill">普通預金</span><span class="pill">売掛金</span><span class="pill">備品</span></div>
+        <div class="card"><h3>② 負債</h3><p>将来、誰かに<strong>お金などを渡す義務</strong>。</p><span class="pill">借入金</span><span class="pill">買掛金</span><span class="pill">未払金</span></div>
+        <div class="card"><h3>③ 純資産</h3><p>資産から負債を引いた、会社の正味財産。</p><div class="big" style="text-align:center">資産 − 負債 ＝ 純資産</div></div>
+        <div class="card"><h3>④ 収益　⑤ 費用</h3><div class="diagram"><div class="box"><strong>収益</strong>売上など</div><div class="arrow">vs.</div><div class="box"><strong>費用</strong>給料・家賃など</div></div><div class="big" style="text-align:center">収益 − 費用 ＝ 利益</div></div>
+
+        <div class="card quiz" data-answer="負債">
+          <h3>確認問題</h3><p>銀行から50万円を借りました。「借入金」はどの箱？</p>
+          <div class="quiz-options"><button>資産</button><button>負債</button><button>収益</button><button>費用</button></div>
+          <div class="feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="next-row"><button class="action primary next">次へ：左と右 →</button></div>
+      </section>
+
+      <section class="lesson" data-page="2">
+        <h2>03｜なぜ「左」と「右」がある？</h2>
+        <p class="lead">ここで初めて借方・貸方を出します。名前の意味ではなく、場所の名前として覚えます。</p>
+
+        <div class="card">
+          <h3>T字の箱を想像する</h3>
+          <div class="taccount">
+            <div><div class="side-title">左 ＝ 借方</div></div>
+            <div><div class="side-title">右 ＝ 貸方</div></div>
+          </div>
+          <p><strong>借方＝左、貸方＝右。</strong> 「借りる・貸す」という日本語の意味とは切り離して考えてください。</p>
+        </div>
+
+        <div class="card">
+          <h3>5つの箱には「増える側」が決まっている</h3>
+          <div class="taccount">
+            <div><div class="side-title">← 借方で増える</div><p><span class="pill">資産 ↑</span><span class="pill">費用 ↑</span></p></div>
+            <div><div class="side-title">貸方で増える →</div><p><span class="pill">負債 ↑</span><span class="pill">純資産 ↑</span><span class="pill">収益 ↑</span></p></div>
+          </div>
+          <div class="memory"><strong>ここだけは覚える</strong><br>資産・費用は左で増える。<br>負債・純資産・収益は右で増える。<br>減るときは反対側。</div>
+        </div>
+
+        <div class="card quiz" data-answer="左（借方）">
+          <h3>確認問題</h3><p>現金（資産）が増えました。左右どちら？</p>
+          <div class="quiz-options"><button>左（借方）</button><button>右（貸方）</button></div>
+          <div class="feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="next-row"><button class="action primary next">次へ：仕訳 →</button></div>
+      </section>
+
+      <section class="lesson" data-page="3">
+        <h2>04｜はじめての「仕訳」</h2>
+        <p class="lead">仕訳とは、取引を「左側と右側」に翻訳することです。</p>
+
+        <div class="card">
+          <h3>例：商品を現金1万円で買った</h3>
+          <p><strong>STEP 1：</strong>何が起きたかを2つに分ける。</p>
+          <p>① 商品を仕入れた → 「仕入」という<strong>費用が増える</strong><br>② 現金を払った → 「現金」という<strong>資産が減る</strong></p>
+          <p><strong>STEP 2：</strong>左右を決める。</p>
+          <p>費用が増える → 左<br>資産が減る → 右</p>
+          <div class="journal"><div class="head">借方（左）</div><div class="head">貸方（右）</div><div><strong>仕入 10,000</strong></div><div><strong>現金 10,000</strong></div></div>
+        </div>
+
+        <div class="card">
+          <h3>もう1つ：商品を2万円で現金販売</h3>
+          <p>① 現金が増える → 資産↑ → <strong>左</strong><br>② 売上が増える → 収益↑ → <strong>右</strong></p>
+          <div class="journal"><div class="head">借方（左）</div><div class="head">貸方（右）</div><div><strong>現金 20,000</strong></div><div><strong>売上 20,000</strong></div></div>
+        </div>
+
+        <div class="memory"><strong>仕訳の4ステップ</strong><br>① 何が動いた？ → ② 5分類のどれ？ → ③ 増えた？減った？ → ④ 左？右？</div>
+        <div class="next-row"><button class="action primary next">ミニテストへ →</button></div>
+      </section>
+
+      <section class="lesson" data-page="4">
+        <h2>05｜ゼロスタート確認テスト</h2>
+        <p class="lead">暗記ではなく、今までの考え方で答えてください。</p>
+
+        <div id="testArea">
+          <div class="card test-q" data-answer="資産"><h3>Q1</h3><p>会社が持っている「現金」は5分類のどれ？</p><div class="quiz-options"><button>資産</button><button>負債</button><button>収益</button><button>費用</button></div><div class="feedback"></div></div>
+          <div class="card test-q" data-answer="負債"><h3>Q2</h3><p>銀行から借りた「借入金」は？</p><div class="quiz-options"><button>資産</button><button>負債</button><button>純資産</button><button>費用</button></div><div class="feedback"></div></div>
+          <div class="card test-q" data-answer="左"><h3>Q3</h3><p>資産が増えるのはどちら側？</p><div class="quiz-options"><button>左</button><button>右</button></div><div class="feedback"></div></div>
+          <div class="card test-q" data-answer="右"><h3>Q4</h3><p>収益が増えるのはどちら側？</p><div class="quiz-options"><button>左</button><button>右</button></div><div class="feedback"></div></div>
+          <div class="card test-q" data-answer="現金 30,000 / 売上 30,000"><h3>Q5</h3><p>商品30,000円を現金で販売。正しい仕訳は？</p><div class="quiz-options"><button>売上 30,000 / 現金 30,000</button><button>現金 30,000 / 売上 30,000</button><button>仕入 30,000 / 現金 30,000</button></div><div class="feedback"></div></div>
+        </div>
+
+        <div id="result" class="card result hidden" aria-live="polite"></div>
+        <div class="next-row">
+          <button id="reset" class="action">回答をリセット</button>
+          <button id="grade" class="action primary">採点する</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">このページの進捗は、このブラウザ内に保存されます。</footer>
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('app');
+  const pages = [...root.querySelectorAll('.lesson')];
+  const navs = [...root.querySelectorAll('.side button')];
+  const progress = document.getElementById('progress');
+  const chapterStat = document.getElementById('chapterStat');
+  const scoreStat = document.getElementById('scoreStat');
+  const doneStat = document.getElementById('doneStat');
+  let current = Number(localStorage.getItem('boki_current') || 0);
+  let totalCorrect = Number(localStorage.getItem('boki_correct') || 0);
+
+  function updateStats(){
+    chapterStat.textContent = (current+1) + ' / ' + pages.length;
+    const pct = Math.round(((current+1)/pages.length)*100);
+    progress.style.width = pct + '%';
+    doneStat.textContent = pct + '%';
+    scoreStat.textContent = totalCorrect;
+  }
+
+  function show(n){
+    current = Math.max(0, Math.min(pages.length-1, n));
+    pages.forEach((p,i)=>p.classList.toggle('active', i===current));
+    navs.forEach((b,i)=>b.classList.toggle('active', i===current));
+    localStorage.setItem('boki_current', current);
+    updateStats();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  navs.forEach((b,i)=>b.addEventListener('click',()=>show(i)));
+  root.querySelectorAll('.next').forEach(b=>b.addEventListener('click',()=>show(current+1)));
+
+  root.querySelectorAll('.quiz').forEach(q=>{
+    const answer = q.dataset.answer;
+    q.querySelectorAll('.quiz-options button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        q.querySelectorAll('button').forEach(x=>x.classList.remove('correct','wrong'));
+        const correct = btn.textContent.trim() === answer;
+        btn.classList.add(correct ? 'correct':'wrong');
+        q.querySelector('.feedback').textContent = correct ? '✓ 正解。' : '× もう一度、分類 → 増減 → 左右の順で考えてみよう。';
+        if(correct && q.dataset.counted!=='1'){
+          totalCorrect++;
+          q.dataset.counted='1';
+          localStorage.setItem('boki_correct', totalCorrect);
+          updateStats();
+        }
+      });
+    });
+  });
+
+  root.querySelectorAll('.test-q').forEach(q=>{
+    q.querySelectorAll('.quiz-options button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        q.querySelectorAll('button').forEach(x=>x.classList.remove('correct','wrong'));
+        q.dataset.selected = btn.textContent.trim();
+        btn.classList.add('correct');
+        q.querySelector('.feedback').textContent = '回答を保存しました。';
+      });
+    });
+  });
+
+  document.getElementById('grade').addEventListener('click',()=>{
+    const qs = [...root.querySelectorAll('.test-q')];
+    let score = 0;
+    qs.forEach(q=>{
+      const selected = q.dataset.selected || '';
+      const answer = q.dataset.answer;
+      q.querySelectorAll('.quiz-options button').forEach(btn=>{
+        btn.classList.remove('correct','wrong');
+        if(btn.textContent.trim()===answer) btn.classList.add('correct');
+        else if(btn.textContent.trim()===selected && selected!==answer) btn.classList.add('wrong');
+      });
+      q.querySelector('.feedback').textContent = selected===answer ? '✓ 正解' : '× 正解を緑で表示しました';
+      if(selected===answer) score++;
+    });
+    const result = document.getElementById('result');
+    result.classList.remove('hidden');
+    result.innerHTML = '<strong>'+score+' / '+qs.length+'</strong>' +
+      (score===qs.length ? '基礎クリア。次は「商品売買・掛取引」へ進める状態です。'
+      : score>=3 ? 'あと少し。間違えた問題だけ復習しましょう。'
+      : '第2章と第3章をもう一度見直しましょう。');
+    localStorage.setItem('boki_last_test_score', score);
+  });
+
+  document.getElementById('reset').addEventListener('click',()=>{
+    root.querySelectorAll('.test-q').forEach(q=>{
+      delete q.dataset.selected;
+      q.querySelectorAll('button').forEach(b=>b.classList.remove('correct','wrong'));
+      q.querySelector('.feedback').textContent='';
+    });
+    document.getElementById('result').classList.add('hidden');
+  });
+
+  show(current);
+})();
+</script>
+</body>
+</html>
